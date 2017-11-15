@@ -19,9 +19,9 @@ no username {{ item.username }}
       {% else %}
         {% if item.password is defined and item.password %}
           {% if item.role is defined and item.role %}
-username {{ item.username }} password $0${{ item.password }} role {{ item.role }}
+username {{ item.username }} password {{ item.password }} role {{ item.role }}
           {% else %}
-username {{ item.username }} password $0${{ item.password }}
+username {{ item.username }} password {{ item.password }}
           {% endif %}
         {% endif %}
       {% endif %}
