@@ -7,6 +7,7 @@ Configure users commands for dellos9 Devices
 dellos_users:
    - userrole: role1
      userrole_state: present
+     userrole_inherit: rolename
    - username: test
      password: test
      pass_key: 7
@@ -27,7 +28,7 @@ dellos_users:
      privilege: 3
      role: sysadmin
      state: present
-      
+
 ###################################################}
 {% if dellos_users is defined and dellos_users %}
 {% for item in dellos_users %}
@@ -42,8 +43,31 @@ no username {{ item.username }}
       {% endfor %}
 no userrole {{ item.userrole }}
     {% else %}
+      {% if item.userrole_inherit is defined and item.userrole_inherit }
+userrole {{ item.userrole }} inherit {{ item.userrole_inherit }}
+      {% else %}
 userrole {{ item.userrole }}
+      {% endif %}
     {% endif %}
+  {% endif %}
+  {% if item.role_permission is defined and item.role_permission %}
+    {% for rolelist in item.role_permission %}
+      {% if rolelist.mode is defined and (rolelist.mode == "configure" or rolelist.mode == "exec" or rolelist.mode == "interface" or rolelist.mode == "line" or rolelist.mode == "route-map" or rolelist.mode == "router") %}
+        {% if rolelist.action is defined and (rolelist.action == "reset" or rolelist.action == "addrole" or rolelist.action == "deleterole") %}
+          {% if rolelist.line is defined and rolelist.line %}
+            {% if rolelist.action != "reset" and rolelist.role_name is defined and rolelist.role_name %}
+              {% if rolelist.state is defined and rolelist.state == "absent" %}
+no role {{ rolelist.mode }} {{ rolelist.action }} {{ rolelist.role_name }} {{ rolelist.line }}
+              {% else %}
+role {{ rolelist.mode }} {{ rolelist.action }} {{ rolelist.role_name }} {{ rolelist.line }}
+              {% endif %}
+            {% else %}
+role {{ rolelist.mode }} reset {{ rolelist.line }}
+            {% endif %}
+          {% endif %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
   {% endif %}
   {% if item.username is defined and item.username %}
     {% if item.state is defined and item.state == "absent" %}
