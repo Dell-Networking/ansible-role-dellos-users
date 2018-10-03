@@ -43,7 +43,7 @@ no username {{ item.username }}
       {% endfor %}
 no userrole {{ item.userrole }}
     {% else %}
-      {% if item.userrole_inherit is defined and item.userrole_inherit }
+      {% if item.userrole_inherit is defined and item.userrole_inherit %}
 userrole {{ item.userrole }} inherit {{ item.userrole_inherit }}
       {% else %}
 userrole {{ item.userrole }}
@@ -51,23 +51,21 @@ userrole {{ item.userrole }}
     {% endif %}
   {% endif %}
   {% if item.role_permission is defined and item.role_permission %}
-    {% for rolelist in item.role_permission %}
-      {% if rolelist.mode is defined and (rolelist.mode == "configure" or rolelist.mode == "exec" or rolelist.mode == "interface" or rolelist.mode == "line" or rolelist.mode == "route-map" or rolelist.mode == "router") %}
-        {% if rolelist.action is defined and (rolelist.action == "reset" or rolelist.action == "addrole" or rolelist.action == "deleterole") %}
-          {% if rolelist.line is defined and rolelist.line %}
-            {% if rolelist.action != "reset" and rolelist.role_name is defined and rolelist.role_name %}
-              {% if rolelist.state is defined and rolelist.state == "absent" %}
-no role {{ rolelist.mode }} {{ rolelist.action }} {{ rolelist.role_name }} {{ rolelist.line }}
-              {% else %}
-role {{ rolelist.mode }} {{ rolelist.action }} {{ rolelist.role_name }} {{ rolelist.line }}
-              {% endif %}
+    {% if item.role_permission.mode is defined and (item.role_permission.mode == "configure" or item.role_permission.mode == "exec" or item.role_permission.mode == "interface" or item.role_permission.mode == "line" or item.role_permission.mode == "route-map" or item.role_permission.mode == "router") %}
+      {% if item.role_permission.action is defined and (item.role_permission.action == "reset" or item.role_permission.action == "addrole" or item.role_permission.action == "deleterole") %}
+        {% if item.role_permission.line is defined and item.role_permission.line %}
+          {% if item.role_permission.action != "reset" and item.role_permission.role_name is defined and item.role_permission.role_name %}
+            {% if item.role_permission.state is defined and item.role_permission.state == "absent" %}
+norole {{ item.role_permission.mode }} {{ item.role_permission.action }} {{ item.role_permission.role_name }} {{ item.role_permission.line }}
             {% else %}
-role {{ rolelist.mode }} reset {{ rolelist.line }}
+role {{ item.role_permission.mode }} {{ item.role_permission.action }} {{ item.role_permission.role_name }} {{ item.role_permission.line }}
             {% endif %}
+          {% else %}
+role {{ item.role_permission.mode }} reset {{ item.role_permission.line }}
           {% endif %}
         {% endif %}
       {% endif %}
-    {% endfor %}
+    {% endif %}
   {% endif %}
   {% if item.username is defined and item.username %}
     {% if item.state is defined and item.state == "absent" %}
