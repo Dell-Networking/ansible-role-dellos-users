@@ -78,13 +78,13 @@ no username {{ item.username }}
 {% set passwd = item.password %}
         {% endif %}
           {% if item.privilege is defined and item.privilege and item.access_class is defined and item.access_class and item.role is defined and item.role %}
-username {{ item.username }} password {{ passwd }} role {{ item.role }} privilege {{ item.privilege }} access-class {{ item.access_class }}
+username {{ item.username }} password {{ passwd }} privilege {{ item.privilege }} role {{ item.role }} access-class {{ item.access_class }}
           {% elif item.role is defined and item.role and item.privilege is defined and item.privilege %}
-username {{ item.username }} password {{ passwd }} role {{ item.role }} privilege {{ item.privilege }}
+username {{ item.username }} password {{ passwd }} privilege {{ item.privilege }} role {{ item.role }}
           {% elif item.role is defined and item.role and item.access_class is defined and item.access_class %}
-username {{ item.username }} password {{ passwd }} role {{ item.role }} access-class {{ item.access_class }}
+username {{ item.username }} password {{ passwd }} access-class {{ item.access_class }} role {{ item.role }}
           {% elif item.privilege is defined and item.privilege and item.access_class is defined and item.access_class %}
-username {{ item.username }} password {{ passwd }} privilege {{ item.privilege }} access-class {{ item.access_class }}
+username {{ item.username }} password {{ passwd }} access-class {{ item.access_class }} privilege {{ item.privilege }}
           {% elif item.role is defined and item.role %}
 username {{ item.username }} password {{ passwd }} role {{ item.role }}
           {% elif item.privilege is defined and item.privilege %}
