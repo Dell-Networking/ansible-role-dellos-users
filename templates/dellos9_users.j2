@@ -1,9 +1,7 @@
 #jinja2: trim_blocks: True,lstrip_blocks: True
 {#############################################
-
 Purpose:
 Configure users commands for dellos9 Devices
-
 dellos_users:
    - userrole: role1
      userrole_state: present
@@ -27,7 +25,6 @@ dellos_users:
      privilege: 3
      role: sysadmin
      state: present
-      
 ###################################################}
 {% if dellos_users is defined and dellos_users %}
 {% for item in dellos_users %}
@@ -120,4 +117,3 @@ username {{ item.username }} nopassword
   {% endif %}
 {% endfor %}
 {% endif %}
-
