@@ -7,6 +7,7 @@ Configure users commands for dellos9 Devices
 dellos_users:
    - userrole: role1
      userrole_state: present
+     userrole_inherit: rolename
    - username: test
      password: test
      pass_key: 7
@@ -27,7 +28,7 @@ dellos_users:
      privilege: 3
      role: sysadmin
      state: present
-      
+
 ###################################################}
 {% if dellos_users is defined and dellos_users %}
 {% for item in dellos_users %}
@@ -42,7 +43,28 @@ no username {{ item.username }}
       {% endfor %}
 no userrole {{ item.userrole }}
     {% else %}
+      {% if item.userrole_inherit is defined and item.userrole_inherit %}
+userrole {{ item.userrole }} inherit {{ item.userrole_inherit }}
+      {% else %}
 userrole {{ item.userrole }}
+      {% endif %}
+    {% endif %}
+  {% endif %}
+  {% if item.role_permission is defined and item.role_permission %}
+    {% if item.role_permission.mode is defined and (item.role_permission.mode == "configure" or item.role_permission.mode == "exec" or item.role_permission.mode == "interface" or item.role_permission.mode == "line" or item.role_permission.mode == "route-map" or item.role_permission.mode == "router") %}
+      {% if item.role_permission.action is defined and (item.role_permission.action == "reset" or item.role_permission.action == "addrole" or item.role_permission.action == "deleterole") %}
+        {% if item.role_permission.line is defined and item.role_permission.line %}
+          {% if item.role_permission.action != "reset" and item.role_permission.role_name is defined and item.role_permission.role_name %}
+            {% if item.role_permission.state is defined and item.role_permission.state == "absent" %}
+norole {{ item.role_permission.mode }} {{ item.role_permission.action }} {{ item.role_permission.role_name }} {{ item.role_permission.line }}
+            {% else %}
+role {{ item.role_permission.mode }} {{ item.role_permission.action }} {{ item.role_permission.role_name }} {{ item.role_permission.line }}
+            {% endif %}
+          {% else %}
+role {{ item.role_permission.mode }} reset {{ item.role_permission.line }}
+          {% endif %}
+        {% endif %}
+      {% endif %}
     {% endif %}
   {% endif %}
   {% if item.username is defined and item.username %}
@@ -56,13 +78,13 @@ no username {{ item.username }}
 {% set passwd = item.password %}
         {% endif %}
           {% if item.privilege is defined and item.privilege and item.access_class is defined and item.access_class and item.role is defined and item.role %}
-username {{ item.username }} password {{ passwd }} role {{ item.role }} privilege {{ item.privilege }} access-class {{ item.access_class }}
+username {{ item.username }} password {{ passwd }} privilege {{ item.privilege }} role {{ item.role }} access-class {{ item.access_class }}
           {% elif item.role is defined and item.role and item.privilege is defined and item.privilege %}
-username {{ item.username }} password {{ passwd }} role {{ item.role }} privilege {{ item.privilege }}
+username {{ item.username }} password {{ passwd }} privilege {{ item.privilege }} role {{ item.role }}
           {% elif item.role is defined and item.role and item.access_class is defined and item.access_class %}
-username {{ item.username }} password {{ passwd }} role {{ item.role }} access-class {{ item.access_class }}
+username {{ item.username }} password {{ passwd }} access-class {{ item.access_class }} role {{ item.role }}
           {% elif item.privilege is defined and item.privilege and item.access_class is defined and item.access_class %}
-username {{ item.username }} password {{ passwd }} privilege {{ item.privilege }} access-class {{ item.access_class }}
+username {{ item.username }} password {{ passwd }} access-class {{ item.access_class }} privilege {{ item.privilege }}
           {% elif item.role is defined and item.role %}
 username {{ item.username }} password {{ passwd }} role {{ item.role }}
           {% elif item.privilege is defined and item.privilege %}
