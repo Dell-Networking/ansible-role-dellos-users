@@ -23,8 +23,15 @@ Role variables
 
 | Key        | Type                      | Description                                             | Support               |
 |------------|---------------------------|---------------------------------------------------------|-----------------------|
-| ``userrole`` | stirng (required) | Configures the role name which can be configured for users | dellos9 |
+| ``userrole`` | string (required) | Configures the role name which can be configured for users | dellos9 |
 | ``userrole_state`` | string: absent,present\* | Deletes the user role with specified name if set to absent | dellos9 |
+| ``userrole_inherit`` | string | Configures the existing role from which to inherit permissions (optional) | dellos9 |
+| ``role_permission`` | dictionary     | Configures command permissions for roles (see ``role_permission.\*`` | dellos9 |
+| ``role_permission.mode`` | string: configure,exec,interface,line,route-map,router     | Configures the mode for the role permission | dellos9 |
+| ``role_permission.action`` | string: reset,absent,present\*     | Configures whether to ``addrole``, ``deleterole``, or ``reset`` | dellos9 |
+| ``role_permission.role_name`` | string     | Configures the role name for the permission action | dellos9 |
+| ``role_permission.line`` | string     | Configures the LINE for the role permission (command to modify permission of) | dellos9 |
+| ``role_permission.state`` | absent,present\*     | Resets the role to its original setting | dellos9 |
 | ``username`` | string (required)         | Configures the username which must adhere to specific format guidelines (valid usernames begin with A-Z, a-z, or 0-9 and can also contain `@#$%^&*-_= +;<>,.~` characters) | dellos6, dellos9, dellos10 |
 | ``password`` | string                    | Configures the password set for the username; password length must be at least eight characters in dellos10 and dellos6 devices | dellos6, dellos9, dellos10 |
 | ``role`` | string                    | Configures the role assigned to the user | dellos9, dellos10 |
@@ -35,7 +42,7 @@ Role variables
 | ``secret_key`` | integer: 0\*,5 | Configures the secret line password using md5 encrypted algorithm | dellos9 |
 | ``state`` | string: absent,present\*     | Deletes a user account if set to absent  | dellos6, dellos9, dellos10 |
 
-> **NOTE**: Asterisk (\*) denotes the default value if none is specified. 
+> **NOTE**: Asterisk (\*) denotes the default value if none is specified.
 
 Connection variables
 --------------------
@@ -63,11 +70,11 @@ The *dellos-users* role is built on modules included in the core Ansible code. T
 Example playbook
 ----------------
 
-This role is abstracted using the *ansible_network_os* variable that can take dellos9, dellos6, and dellos10 values. If *dellos_cfg_generate* is set to true, the variable generates the role configuration commands in a file. It writes a simple playbook that only references the *dellos-users* role. By including the role, you automatically get access to all of the tasks to configure user features. 
+This role is abstracted using the *ansible_network_os* variable that can take dellos9, dellos6, and dellos10 values. If *dellos_cfg_generate* is set to true, the variable generates the role configuration commands in a file. It writes a simple playbook that only references the *dellos-users* role. By including the role, you automatically get access to all of the tasks to configure user features.
 
 **Sample hosts file**
- 
-    leaf1 ansible_host= <ip_address> 
+
+    leaf1 ansible_host= <ip_address>
 
 **Sample host_vars/leaf1**
 
@@ -79,10 +86,11 @@ This role is abstracted using the *ansible_network_os* variable that can take de
     ansible_ssh_pass: xxxxx
     ansible_network_os: dellos9
     build_dir: ../temp/dellos9
-	  
+
     dellos_users:
        - userrole: role1
          userrole_state: present
+         userrole_inherit: netoperator
        - username: u1
          password: test
          role: sysadmin
@@ -101,6 +109,12 @@ This role is abstracted using the *ansible_network_os* variable that can take de
          privilege: 3
          role: sysadmin
          state: present
+      - role_permission:
+          mode: configure
+          action: addrole
+          role_name: 'netoperator'
+          line: 'protocol spanning-tree'
+          state: present
 
 **Simple playbook to setup users - leaf.yaml**
 
