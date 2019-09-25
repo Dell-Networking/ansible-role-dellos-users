@@ -1,6 +1,5 @@
 ---
 # vars file for Dell-Networking.dellos-users, below gives a sample configuration
-
 # Sample variables for dellos9 device
 dellos_users:
    - userrole: role1
@@ -43,4 +42,3 @@ dellos_users:
     password: rtft4
     role: netadmin
     state : present
-

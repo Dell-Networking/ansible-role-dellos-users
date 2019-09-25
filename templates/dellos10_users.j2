@@ -1,15 +1,12 @@
 #jinja2: trim_blocks: True,lstrip_blocks: True
 {#############################################
-
 Purpose:
 Configure users commands for dellos10 Devices
-
 dellos_users:
   - username: test
     password: test
     role: sysadmin
     state: present
-
 ###############################################}
 {% if dellos_users is defined and dellos_users %}
   {% for item in dellos_users %}
