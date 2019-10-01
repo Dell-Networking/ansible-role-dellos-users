@@ -1,0 +1,8 @@
+---
+# vars file for Dell-Networking.dellos-users, below gives a sample configuration
+# Sample variables for dellos6 device
+dellos_users:
+   - username: test
+     password: test
+     privilege: 0
+     state: absent
