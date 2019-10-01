@@ -9,4 +9,4 @@ dellos_users:
   - username: u1
     password: rtft4
     role: netadmin
-    state : present
+    state: present
