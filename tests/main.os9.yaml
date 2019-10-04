@@ -19,26 +19,8 @@ dellos_users:
      state: present
    - username: u2
      secret: test1
-     secret_key : 0
+     secret_key: 0
      access_class: a2
      privilege: 3
      role: sysadmin
      state: present
-
-# Sample variables for dellos6 device
-dellos_users:
-   - username: test
-     password: test
-     privilege: 0
-     state: absent
-
-# Sample variables for dellos10 device
-dellos_users:
-  - username: test
-    password: test
-    role: sysadmin
-    state: present
-  - username: u1
-    password: rtft4
-    role: netadmin
-    state : present

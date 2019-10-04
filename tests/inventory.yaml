@@ -19,6 +19,3 @@ leaf4
 [datacenter:children]
 spine
 leaf
-~
-~
-

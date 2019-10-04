@@ -1,0 +1,12 @@
+---
+# vars file for Dell-Networking.dellos-users, below gives a sample configuration
+# Sample variables for dellos10 device
+dellos_users:
+  - username: test
+    password: test
+    role: sysadmin
+    state: present
+  - username: u1
+    password: rtft4
+    role: netadmin
+    state: present
